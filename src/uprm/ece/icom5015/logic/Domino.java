@@ -22,6 +22,13 @@ public class Domino {
 		return tail+head;
 	}
 	
+	public void print(){
+		System.out.println("("+head+"|"+tail+")");
+	}
+	
+	public boolean isDouble(){
+		return head==tail;
+	}
 	
 	
 
