@@ -182,51 +182,6 @@ public class GameLogic {
 		
 	}
 	
-	/*public void Play(Domino p,String position){
-		if(p.isDouble()){
-			played.add(p);
-			Remove(p);
-			RemoveFromHand(currentPlayer,p);
-			currentPlayer = NextPlayer();
-			
-		}
-		
-			if(position=="head" && p.isDouble()== false){
-			if(p.getHeadValue()==head){
-				this.head=p.getTailValue();
-				played.add(p);
-				Remove(p);
-				RemoveFromHand(currentPlayer,p);
-				currentPlayer = NextPlayer();
-				}
-			else{
-				this.head=p.getHeadValue();
-				played.add(p);
-				Remove(p);
-				RemoveFromHand(currentPlayer,p);
-				currentPlayer = NextPlayer();
-				}
-								}
-			
-			if(position=="tail" && p.isDouble()== false){
-				if(p.getHeadValue()==tail){
-					this.tail=p.getTailValue();
-					played.add(p);
-					Remove(p);
-					RemoveFromHand(currentPlayer,p);
-					currentPlayer = NextPlayer();
-					}
-				else{
-					this.tail=p.getHeadValue();
-					played.add(p);
-					Remove(p);
-					RemoveFromHand(currentPlayer,p);
-					currentPlayer = NextPlayer();
-					}
-									}
-			
-		
-	}*/
 	
 	private void Remove(Domino p) {
 		int index =unplayed.lastIndexOf(p);
