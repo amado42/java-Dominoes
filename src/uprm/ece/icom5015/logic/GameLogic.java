@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GameLogic {
-	String currentPlayer;
+	String currentPlayer,Starts;
 	Domino[] bot, top, left, right;
 	ArrayList<Domino> played;
 	ArrayList<Domino> unplayed;
 	int playerScore, computerScore, head, tail;
-	boolean tie;
+	boolean lock;
 	
 	public GameLogic()
 	{
-		tie = false;
+		lock = false;
 		playerScore = 0;
 		computerScore = 0;
 		currentPlayer = FirstGame();
@@ -21,11 +21,11 @@ public class GameLogic {
 	}
 	
 	public Domino[] currentHand(){
-		if(currentPlayer=="bot")
+		if(currentPlayer.equals("bot"))
 			return bot;
-		if(currentPlayer=="top")
+		if(currentPlayer.equals("top"))
 			return top;
-		if(currentPlayer=="left")
+		if(currentPlayer.equals("left"))
 			return left;
 		else return right;
 	}
@@ -36,12 +36,13 @@ public class GameLogic {
 		top = t.player2;
 		left = t.player3;
 		right = t.player4;
+		played.clear(); 
+		unplayed.clear();
 		played = t.played;
 		unplayed = t.unplayed;
 		currentPlayer = winner;
-		tie=false;
-		played.clear(); 
-		unplayed.clear();
+		lock=false;
+		
 	}
 	@SuppressWarnings("static-access")
 	public String FirstGame(){
@@ -52,7 +53,6 @@ public class GameLogic {
 		right = t.player4;
 		played = t.played;
 		unplayed = t.unplayed;
-		tie=false;
 		String doubleSix = null;
 		for(int i=0;i<7;i++){
 			if(bot[i].getHeadValue() ==6 && bot[i].getTailValue()==6){
@@ -72,6 +72,7 @@ public class GameLogic {
 				break;
 			}
 		}
+		setStarts(doubleSix);
 		return doubleSix;
 	}
 	
@@ -121,7 +122,7 @@ public class GameLogic {
 				}
 			}
 			
-			bot = temp;
+			setBot(temp);
 		}
 		
 		if(player=="right"){
@@ -139,7 +140,7 @@ public class GameLogic {
 				}
 			}
 			
-			right = temp;
+			setRight(temp);
 		}
 		
 		if(player=="top"){
@@ -157,7 +158,7 @@ public class GameLogic {
 				}
 			}
 			
-			top = temp;
+			setTop(temp);
 		}
 		
 		if(player=="left"){
@@ -175,16 +176,26 @@ public class GameLogic {
 				}
 			}
 			
-			left = temp;
+			setLeft(temp);
 		}
 	}
 	
-	public String NextPlayer(){
-		if(currentPlayer=="bot")
+	public String LastPlayer(){
+		if(currentPlayer.equals("bot"))
+			return "left";
+		else if(currentPlayer.equals("right"))
+			return "bot";
+		else if(currentPlayer.equals("top"))
 			return "right";
-		else if(currentPlayer=="right")
+		else return "top";
+	}
+	
+	public String NextPlayer(){
+		if(currentPlayer.equals("bot"))
+			return "right";
+		else if(currentPlayer.equals("right"))
 			return "top";
-		else if(currentPlayer=="top")
+		else if(currentPlayer.equals("top"))
 			return "left";
 		else return "bot";
 	}
@@ -193,6 +204,7 @@ public class GameLogic {
 		int curHead = p.getHeadValue();
 		int curTail = p.getTailValue();
 		Scanner scanner = new Scanner(System.in);
+		int chosenPlay;
 		if(p.isDouble()){
 			played.add(p);
 			Remove(p);
@@ -200,15 +212,56 @@ public class GameLogic {
 			currentPlayer = NextPlayer();
 			
 		}
-		else if(p.getHeadValue()==head){
-				this.head=p.getTailValue();
-				played.add(p);
-				Remove(p);
-				RemoveFromHand(currentPlayer,p);
-				currentPlayer = NextPlayer();
-				}
-			else if(p.getTailValue()==head){
-				this.head=p.getHeadValue();
+		else if((curHead == head && curTail == tail) || (curHead == tail && curTail == head)){
+			System.out.println("Where do you wish to play your tile? ");
+			System.out.println(" 0. Head ");
+			System.out.println(" 1. Tail ");
+			chosenPlay = scanner.nextInt();
+			if(chosenPlay ==0){
+				
+				if(curHead==head){
+					setHead(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else {
+					setHead(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+			}
+			if(chosenPlay ==1){
+				
+				if(curHead==tail){
+					setTail(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else{
+					setTail(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+			}
+		}
+		
+			else if(curHead==head){
+			setHead(curTail);
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			}
+			else if(curTail==head){
+				setHead(curHead);
 				played.add(p);
 				Remove(p);
 				RemoveFromHand(currentPlayer,p);
@@ -216,15 +269,15 @@ public class GameLogic {
 				}
 								
 			
-			else if(p.getHeadValue()==tail){
-					this.tail=p.getTailValue();
+			else if(curHead==tail){
+					setTail(curTail);
 					played.add(p);
 					Remove(p);
 					RemoveFromHand(currentPlayer,p);
 					currentPlayer = NextPlayer();
 					}
 				else{
-					this.tail=p.getHeadValue();
+					setTail(curHead);
 					played.add(p);
 					Remove(p);
 					RemoveFromHand(currentPlayer,p);
@@ -245,22 +298,46 @@ public class GameLogic {
 	/*public boolean checkForTie(){
 
 	}*/
-	public boolean Win(Domino[] a, Domino[] b, Domino[] c, String team){
+	public void Win(){
+		Domino[] a = null;
+		Domino[] b = null;
+		Domino[] c = null;
 		int score = 0;
+		if(currentPlayer.equals("bot")){
+			 a = top;
+			 b = left;
+			 c = right;	
+		}
+		if(currentPlayer.equals("top")){
+			 a = bot;
+			 b = left;
+			 c = right;	
+			}
+		if(currentPlayer.equals("left")){
+			 a = top;
+			 b = bot;
+			 c = right;	
+			}
+		if(currentPlayer.equals("right")){
+			 a = top;
+			 b = left;
+			 c = bot;	
+			}
+			
 		for(int i=0;i<a.length;i++)
 			score += a[i].getWeight();
 		for(int j=0;j<b.length;j++)
 			score += b[j].getWeight();
 		for(int x=0;x<c.length;x++)
 			score += c[x].getWeight();
-		if(team=="human"){
+		if(currentPlayer.equals("top") || currentPlayer.equals("bot") ){
 			playerScore += score;
 		}
 		
-		if(team=="computer"){
+		if(currentPlayer.equals("left") || currentPlayer.equals("right") ){
 			computerScore += score;
 		}
-		return GameEnd();
+	
 		
 	}
 
@@ -272,15 +349,58 @@ public class GameLogic {
 	}
 	
 	public boolean GameEnd(){
-		if(bot.length == 0 || top.length == 0 || left.length == 0 || right.length == 0)
-			return true;
-		if(tie)
+		if(bot.length == 0 || top.length == 0 || left.length == 0 || right.length == 0){
+			return true;}
+		if(lock)
 			return true;
 		else return false;
 		}
 	
-	public void CheckForTie(){
-		//TODO
+	public void CheckForLock(){
+		if(ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0)
+			setLock(true);
+	}
+	
+	public int PlayerWeight(Domino[] d){
+		int temp=0;
+		for(int i=0;i<d.length;i++){
+			temp += d[i].getWeight();
+		}
+		return temp;
+	}
+	
+	public String StartingPlayer(){
+		
+		if(lock){
+		int we = PlayerWeight(bot)+PlayerWeight(top);
+	    int them = PlayerWeight(left)+PlayerWeight(right);
+	    if(we<them){
+	    	setComputerScore(computerScore+we+them);
+	    	if(currentPlayer.equals("left") || currentPlayer.equals("right")){
+	    		return currentPlayer;
+	    	}
+	    	else if(currentPlayer.equals("top")){
+	    		return "left";
+	    	}
+	    	else return "right";
+	    }
+		if(we>them){
+			setPlayerScore(playerScore+we+them);
+			if(currentPlayer.equals("top") || currentPlayer.equals("bot")){
+	    		return currentPlayer;
+	    	}
+	    	else if(currentPlayer.equals("left")){
+	    		return "bot";
+	    	}
+	    	else return "top";
+		}
+		else{
+			return Starts;
+		}
+		}
+		Win();
+		return currentPlayer;
+		
 	}
 	
 	
@@ -296,15 +416,15 @@ public class GameLogic {
 		System.out.println("Computer Team Score: "+computerScore);
 		System.out.println("head value: "+head);
 		System.out.println("tail value: "+tail);
-		/*System.out.println("Bottom Player Tiles: ");
-		printTiles(bot);
-		System.out.println("Top Player Tiles: ");
-		printTiles(top);
-		System.out.println("Left Player Tiles: ");
-		printTiles(left);
-		System.out.println("Right Player Tiles: ");
-		printTiles(right);
-		*/
+//		System.out.println("Bottom Player Tiles: ");
+//		printTiles(bot);
+//		System.out.println("Top Player Tiles: ");
+//		printTiles(top);
+//		System.out.println("Left Player Tiles: ");
+//		printTiles(left);
+//		System.out.println("Right Player Tiles: ");
+//		printTiles(right);
+		
 	}
 	/**
 	 * @param args
@@ -354,8 +474,64 @@ public class GameLogic {
 		return tail;
 	}
 
-	public boolean isTie() {
-		return tie;
+	public boolean isLock() {
+		return lock;
+	}
+
+	public void setCurrentPlayer(String currentPlayer) {
+		this.currentPlayer = currentPlayer;
+	}
+
+	public void setBot(Domino[] bot) {
+		this.bot = bot;
+	}
+
+	public void setTop(Domino[] top) {
+		this.top = top;
+	}
+
+	public void setLeft(Domino[] left) {
+		this.left = left;
+	}
+
+	public void setRight(Domino[] right) {
+		this.right = right;
+	}
+
+	public void setPlayed(ArrayList<Domino> played) {
+		this.played = played;
+	}
+
+	public void setUnplayed(ArrayList<Domino> unplayed) {
+		this.unplayed = unplayed;
+	}
+
+	public void setPlayerScore(int playerScore) {
+		this.playerScore = playerScore;
+	}
+
+	public void setComputerScore(int computerScore) {
+		this.computerScore = computerScore;
+	}
+
+	public void setHead(int head) {
+		this.head = head;
+	}
+
+	public void setTail(int tail) {
+		this.tail = tail;
+	}
+
+	public void setLock(boolean lock) {
+		this.lock = lock;
+	}
+
+	public String getStarts() {
+		return Starts;
+	}
+
+	public void setStarts(String starts) {
+		Starts = starts;
 	}
 
 }
