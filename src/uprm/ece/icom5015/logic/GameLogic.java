@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class GameLogic {
 	String currentPlayer;
 	Domino[] bot, top, left, right;
-    ArrayList<Domino> played;
+	ArrayList<Domino> played;
 	ArrayList<Domino> unplayed;
 	int playerScore, computerScore, head, tail;
 	boolean tie;
@@ -190,6 +190,9 @@ public class GameLogic {
 	}
 	
 	public void Play(Domino p){
+		int curHead = p.getHeadValue();
+		int curTail = p.getTailValue();
+		Scanner scanner = new Scanner(System.in);
 		if(p.isDouble()){
 			played.add(p);
 			Remove(p);
@@ -307,6 +310,52 @@ public class GameLogic {
 	 * @param args
 	 */
 	
+    public String getCurrentPlayer() {
+		return currentPlayer;
+	}
 
+	public Domino[] getBot() {
+		return bot;
+	}
+
+	public Domino[] getTop() {
+		return top;
+	}
+
+	public Domino[] getLeft() {
+		return left;
+	}
+
+	public Domino[] getRight() {
+		return right;
+	}
+
+	public ArrayList<Domino> getPlayed() {
+		return played;
+	}
+
+	public ArrayList<Domino> getUnplayed() {
+		return unplayed;
+	}
+
+	public int getPlayerScore() {
+		return playerScore;
+	}
+
+	public int getComputerScore() {
+		return computerScore;
+	}
+
+	public int getHead() {
+		return head;
+	}
+
+	public int getTail() {
+		return tail;
+	}
+
+	public boolean isTie() {
+		return tie;
+	}
 
 }
