@@ -45,14 +45,11 @@ public class Tiles {
 		Random r = new Random();
 		
 		while(!undrawn.isEmpty()){
-			player1[iteration] = undrawn.remove(r.nextInt(undrawn.size()-1));
-			player2[iteration] = undrawn.remove(r.nextInt(undrawn.size()-1));
-			player3[iteration] = undrawn.remove(r.nextInt(undrawn.size()-1));
-			if (undrawn.size()==1)
-				player4[iteration] = undrawn.remove(0);
-			else{
-				player4[iteration] = undrawn.remove(r.nextInt(undrawn.size()-1));
-			}
+			player1[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
+			player2[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
+			player3[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
+			player4[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
+			
 			iteration++;
 			
 		}	
