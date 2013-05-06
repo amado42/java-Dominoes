@@ -9,10 +9,28 @@ public class GameLogic {
     ArrayList<Domino> played;
 	ArrayList<Domino> unplayed;
 	int playerScore, computerScore, head, tail;
+	boolean tie;
 	
-	@SuppressWarnings("static-access")
 	public GameLogic()
 	{
+		tie = false;
+		playerScore = 0;
+		computerScore = 0;
+		currentPlayer = FirstGame();
+		
+	}
+	
+	public Domino[] currentHand(){
+		if(currentPlayer=="bot")
+			return bot;
+		if(currentPlayer=="top")
+			return top;
+		if(currentPlayer=="left")
+			return left;
+		else return right;
+	}
+	@SuppressWarnings("static-access")
+	public void NewGame(String winner){
 		Tiles t = new Tiles();
 		bot = t.player1;
 		top = t.player2;
@@ -20,9 +38,41 @@ public class GameLogic {
 		right = t.player4;
 		played = t.played;
 		unplayed = t.unplayed;
-		playerScore = 0;
-		computerScore = 0;
-		currentPlayer = "bot";
+		currentPlayer = winner;
+		tie=false;
+		played.clear(); 
+		unplayed.clear();
+	}
+	@SuppressWarnings("static-access")
+	public String FirstGame(){
+		Tiles t = new Tiles();
+		bot = t.player1;
+		top = t.player2;
+		left = t.player3;
+		right = t.player4;
+		played = t.played;
+		unplayed = t.unplayed;
+		tie=false;
+		String doubleSix = null;
+		for(int i=0;i<7;i++){
+			if(bot[i].getHeadValue() ==6 && bot[i].getTailValue()==6){
+				doubleSix = "bot";
+				break;
+			}
+			if(top[i].getHeadValue() ==6 && top[i].getTailValue()==6){
+				doubleSix = "top";
+				break;
+			}
+			if(left[i].getHeadValue() ==6 && left[i].getTailValue()==6){
+				doubleSix = "left";
+				break;
+			}
+			if(right[i].getHeadValue() ==6 && right[i].getTailValue()==6){
+				doubleSix = "right";
+				break;
+			}
+		}
+		return doubleSix;
 	}
 	
 	public Domino[] ValidPlays(Domino[] player){
@@ -211,12 +261,25 @@ public class GameLogic {
 		
 	}
 
-	public boolean GameEnd() {
+	public boolean MatchEnd() {
 		if(playerScore>=200 || computerScore>=200)
 			return true;
 		return false;
 		
 	}
+	
+	public boolean GameEnd(){
+		if(bot.length == 0 || top.length == 0 || left.length == 0 || right.length == 0)
+			return true;
+		if(tie)
+			return true;
+		else return false;
+		}
+	
+	public void CheckForTie(){
+		//TODO
+	}
+	
 	
 	public void printTiles(Domino[] tiles){
 		for(int i=0;i<tiles.length;i++){
@@ -230,7 +293,7 @@ public class GameLogic {
 		System.out.println("Computer Team Score: "+computerScore);
 		System.out.println("head value: "+head);
 		System.out.println("tail value: "+tail);
-		System.out.println("Bottom Player Tiles: ");
+		/*System.out.println("Bottom Player Tiles: ");
 		printTiles(bot);
 		System.out.println("Top Player Tiles: ");
 		printTiles(top);
@@ -238,34 +301,12 @@ public class GameLogic {
 		printTiles(left);
 		System.out.println("Right Player Tiles: ");
 		printTiles(right);
-		
+		*/
 	}
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		GameLogic testing =new GameLogic();
-		testing.printGameStatus();
-		System.out.println("Valid Plays for Bottom Player: ");
-		testing.printTiles(testing.ValidPlays(testing.bot));
-		System.out.println("Enter your play Bottom Player: ");
-	    Scanner scanner = new Scanner(System.in);
-	    int chosenIndex = scanner.nextInt();
-	    Domino chosen = testing.bot[chosenIndex];
-	    testing.FirstPlay(chosen);
-	    testing.printGameStatus();
-	    System.out.println("current player: "+testing.currentPlayer);
-	    System.out.println("Valid Plays for right Player: ");
-		testing.printTiles(testing.ValidPlays(testing.right));
-	    System.out.println("Enter your play right Player: ");
-	    chosenIndex = scanner.nextInt();
-	    //System.out.println("head or tail? ");
-	   // String position = scanner.next();
-	    chosen = testing.ValidPlays(testing.right)[chosenIndex];
-	    testing.Play(chosen);
-	    testing.printGameStatus();
-
-	}
+	
 
 
 }
