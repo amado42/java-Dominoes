@@ -20,7 +20,7 @@ public class Tiles {
 		for(int i=0; i<=6; i++){
 			for (int j=i ; j<=6; j++){
 				unplayed.add(new Domino(i,j));
-				System.out.println("Added Domino to collection: "+i+"-"+j);
+				//System.out.println("Added Domino to collection: "+i+"-"+j);
 			}
 		}
 		
@@ -101,9 +101,9 @@ public class Tiles {
 	
 	
 	
-	public static void main(String[] args){
-		new Tiles();
-		print();
-	}
+//	public static void main(String[] args){
+//		new Tiles();
+//		print();
+//	}
 }
 
