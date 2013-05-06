@@ -288,6 +288,51 @@ public class GameLogic {
 		
 	}
 	
+	public void PlayBasicAI(Domino p){
+		int curHead = p.getHeadValue();
+		int curTail = p.getTailValue();
+		if(p.isDouble()){
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			
+		}
+			else if(curHead==head){
+			setHead(curTail);
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			}
+			else if(curTail==head){
+				setHead(curHead);
+				played.add(p);
+				Remove(p);
+				RemoveFromHand(currentPlayer,p);
+				currentPlayer = NextPlayer();
+				}
+								
+			
+			else if(curHead==tail){
+					setTail(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else{
+					setTail(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+									
+			
+		
+	}
+	
 	
 	private void Remove(Domino p) {
 		int index =unplayed.lastIndexOf(p);
@@ -357,7 +402,7 @@ public class GameLogic {
 		}
 	
 	public void CheckForLock(){
-		if(ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0 && ValidPlays(bot).length == 0)
+		if(ValidPlays(bot).length == 0 && ValidPlays(top).length == 0 && ValidPlays(left).length == 0 && ValidPlays(right).length == 0)
 			setLock(true);
 	}
 	
@@ -410,20 +455,24 @@ public class GameLogic {
 			tiles[i].print();
 		}
 	}
+	
+	public void printPlayerTiles(){
+		System.out.println("Bottom Player Tiles: ");
+		printTiles(bot);
+		System.out.println("Top Player Tiles: ");
+		printTiles(top);
+		System.out.println("Left Player Tiles: ");
+		printTiles(left);
+		System.out.println("Right Player Tiles: ");
+		printTiles(right);
+	}
 
 	public void printGameStatus() {
 		System.out.println("Player Team Score: "+playerScore);
 		System.out.println("Computer Team Score: "+computerScore);
 		System.out.println("head value: "+head);
 		System.out.println("tail value: "+tail);
-//		System.out.println("Bottom Player Tiles: ");
-//		printTiles(bot);
-//		System.out.println("Top Player Tiles: ");
-//		printTiles(top);
-//		System.out.println("Left Player Tiles: ");
-//		printTiles(left);
-//		System.out.println("Right Player Tiles: ");
-//		printTiles(right);
+//		
 		
 	}
 	/**
