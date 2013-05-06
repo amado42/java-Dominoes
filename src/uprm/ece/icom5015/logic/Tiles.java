@@ -58,6 +58,10 @@ public class Tiles {
 		}	
 	}
 	
+	public Domino[] getPlayerTiles(){
+		return player1;
+	}
+	
 	static private void print(){
 		System.out.println("Player 1: " +
 				player1[0].getHeadValue()+"-"+player1[0].getTailValue()+", "+
