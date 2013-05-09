@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class GameLogic {
 	String currentPlayer,Starts;
-	Domino[] bot, top, left, right;
+	Domino[] bot, top, left, right, extremes;
 	ArrayList<Domino> played;
 	ArrayList<Domino> unplayed;
 	int playerScore, computerScore, head, tail;
@@ -16,6 +16,7 @@ public class GameLogic {
 		lock = false;
 		playerScore = 0;
 		computerScore = 0;
+		extremes = new Domino[2];
 		currentPlayer = FirstGame();
 		
 	}
@@ -32,10 +33,10 @@ public class GameLogic {
 	@SuppressWarnings("static-access")
 	public void NewGame(String winner){
 		Tiles t = new Tiles();
-		bot = t.player1;
-		top = t.player2;
-		left = t.player3;
-		right = t.player4;
+		bot = t.getTiles(1);
+		top = t.getTiles(2);
+		left = t.getTiles(3);
+		right = t.getTiles(4);
 		played.clear(); 
 		unplayed.clear();
 		played = t.played;
@@ -47,10 +48,10 @@ public class GameLogic {
 	@SuppressWarnings("static-access")
 	public String FirstGame(){
 		Tiles t = new Tiles();
-		bot = t.player1;
-		top = t.player2;
-		left = t.player3;
-		right = t.player4;
+		bot = t.getTiles(1);
+		top = t.getTiles(2);
+		left = t.getTiles(3);
+		right = t.getTiles(4);
 		played = t.played;
 		unplayed = t.unplayed;
 		String doubleSix = null;
@@ -98,6 +99,8 @@ public class GameLogic {
 	public void FirstPlay(Domino p){
 		head=p.getHeadValue();
 		tail=p.getTailValue();
+		extremes[0]=p;
+		extremes[1]=p;
 		played.add(p);
 		Remove(p);
 		RemoveFromHand(currentPlayer,p);
@@ -331,6 +334,141 @@ public class GameLogic {
 									
 			
 		
+	}
+	
+	
+	public void PlayGUI(Domino p){
+		int curHead = p.getHeadValue();
+		int curTail = p.getTailValue();
+		Scanner scanner = new Scanner(System.in);
+		int chosenPlay;
+		if(p.isDouble()){
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			
+		}
+		else if((curHead == head && curTail == tail) || (curHead == tail && curTail == head)){
+			System.out.println("Where do you wish to play your tile? ");
+			System.out.println(" 0. Head ");
+			System.out.println(" 1. Tail ");
+			chosenPlay = scanner.nextInt();
+			if(chosenPlay ==0){
+				
+				if(curHead==head){
+					setHead(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else {
+					setHead(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+			}
+			if(chosenPlay ==1){
+				
+				if(curHead==tail){
+					setTail(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else{
+					setTail(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+			}
+		}
+		
+			else if(curHead==head){
+			setHead(curTail);
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			}
+			else if(curTail==head){
+				setHead(curHead);
+				played.add(p);
+				Remove(p);
+				RemoveFromHand(currentPlayer,p);
+				currentPlayer = NextPlayer();
+				}
+								
+			
+			else if(curHead==tail){
+					setTail(curTail);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else{
+					setTail(curHead);
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}	
+	}
+	
+	
+	
+	public void PlayGUIAI(Domino p){
+		int curHead = p.getHeadValue();
+		int curTail = p.getTailValue();
+		if(p.isDouble()){
+			extremes[0]=p;
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			
+		}
+			else if(curHead==head){
+			setHead(curTail);
+			extremes[0]=p;
+			played.add(p);
+			Remove(p);
+			RemoveFromHand(currentPlayer,p);
+			currentPlayer = NextPlayer();
+			}
+			else if(curTail==head){
+				setHead(curHead);
+				extremes[0]=p;
+				played.add(p);
+				Remove(p);
+				RemoveFromHand(currentPlayer,p);
+				currentPlayer = NextPlayer();
+				}
+								
+			
+			else if(curHead==tail){
+					setTail(curTail);
+					extremes[1]=p;
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}
+				else{
+					setTail(curHead);
+					extremes[1]=p;
+					played.add(p);
+					Remove(p);
+					RemoveFromHand(currentPlayer,p);
+					currentPlayer = NextPlayer();
+					}	
 	}
 	
 	
@@ -581,6 +719,10 @@ public class GameLogic {
 
 	public void setStarts(String starts) {
 		Starts = starts;
+	}
+	
+	public Domino[] getExtremes(){
+		return this.extremes;
 	}
 
 }

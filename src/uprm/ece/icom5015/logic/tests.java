@@ -7,6 +7,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import uprm.ece.icom5015.graphics.GraphicsManager;
+import uprm.ece.icom5015.model.Tile;
+
 public class tests {
 
 	static int startTopY= 43;
@@ -116,15 +119,16 @@ public class tests {
 	}
 
 	public static void main(String[] args) throws IOException{
-		Tiles hand = new Tiles();
+		//Tiles hand = new Tiles();
 		
-		setPlayer(hand.getPlayerTiles());
+		//setPlayer(hand.getPlayerTiles());
 		
-		setComputer("top",5);
-		setComputer("left", 4);
-		setComputer("right", 6);
+		//setComputer("top",5);
+		//setComputer("left", 4);
+		//setComputer("right", 6);
 
-
+	//	GraphicsManager.generateDominoChain(new Tile(new Domino(0,0)));
+		System.out.print((4+2)%4+1);
 	}
 
 }

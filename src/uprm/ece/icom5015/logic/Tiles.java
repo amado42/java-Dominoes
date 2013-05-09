@@ -3,104 +3,204 @@ package uprm.ece.icom5015.logic;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Represents the 28 tiles in the classic game of Dominos.
+ * The constructor initializes all Domino tiles and players.
+ * Each hand can be randomly distributed to each player through the
+ * newHand method.
+ *
+ */
 public class Tiles {
-	
-	static ArrayList<Domino> played = null;
-	static ArrayList<Domino> unplayed = null;
-	static ArrayList<Domino> undrawn  = null;
-	static Domino[] player1, player2, 
-				    player3, player4 = null;
-	
-		
+
+	/* Represents tiles that have been played.                    */
+	ArrayList<Domino> played = null;
+	/* Represents tiles that have not been played.                */
+	ArrayList<Domino> unplayed = null;
+	/* Represents tiles that have not been assigned to
+	 * a player. Is reduced to 0 when all 28 tiles are drawn.     */
+	ArrayList<Domino> undrawn  = null;
+	/* Represents the hand of each player. Initialized at 7 tiles */
+	static ArrayList<Domino> player1, player2, 
+	player3, player4 = null;
+
+	/**
+	 * Basic constructor. Initializes all 28 tiles, the four players,
+	 * and the status lists that represent whether tiles are played or
+	 * not.	
+	 */
 	public Tiles(){
+		/* Initialize status lists */
 		played   = new ArrayList<Domino>();
 		unplayed = new ArrayList<Domino>();
 		undrawn  = new ArrayList<Domino>();
-		
+
+		/* Initialize all 28 Domino tiles. */
 		for(int i=0; i<=6; i++){
 			for (int j=i ; j<=6; j++){
 				unplayed.add(new Domino(i,j));
-				//System.out.println("Added Domino to collection: "+i+"-"+j);
 			}
 		}
-		
-		player1  = new Domino[7];
-		player2  = new Domino[7];
-		player3  = new Domino[7];
-		player4  = new Domino[7];
+		/* Initialize all player hands to hold 7 dominos. */
+		player1  = new ArrayList<Domino>();
+		player2  = new ArrayList<Domino>();
+		player3  = new ArrayList<Domino>();
+		player4  = new ArrayList<Domino>();
+
+		/* Distribute all tiles to the four players. */
 		newHand();
 	}
-	
+
 	/**
-	 * Reset the game
+	 * Reset the game by redistributing the tiles to each player.
+	 * As is in the classic Domino game, each player is assigned a total
+	 * of 7 Domino tiles.
 	 */
 	@SuppressWarnings("unchecked")
-	static private void newHand(){
+	public void newHand(){
+		/* Bring all played tiles back to the unplayed list. */
 		while (!played.isEmpty()){
 			unplayed.add(played.remove(0));
 		}
+		/* All 28 tiles are unplayed and not distributed. Thus
+		 * the undrawn list should also represent the 28 tiles.
+		 */
 		undrawn = (ArrayList<Domino>) unplayed.clone();
+
 		
-		int iteration = 0;
 		Random r = new Random();
-		
+
+		/* Pseudo-randomly distribute each undrawn tile to a player. Do 
+		 * until all tiles are distributed.
+		 */
 		while(!undrawn.isEmpty()){
-			player1[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
-			player2[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
-			player3[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
-			player4[iteration] = undrawn.remove(r.nextInt(undrawn.size()));
-			
-			iteration++;
-			
+			player1.add(undrawn.remove(r.nextInt(undrawn.size())));
+			player2.add(undrawn.remove(r.nextInt(undrawn.size())));
+			player3.add(undrawn.remove(r.nextInt(undrawn.size())));
+			player4.add(undrawn.remove(r.nextInt(undrawn.size())));
+
+
 		}	
 	}
+
+
+	/**
+	 * Gets the hand of the given player. Currently, the 
+	 * human is player 1; all other players are computers.
+	 * @param playerNo
+	 * @return
+	 */
+	public Domino[] getTiles(final int playerNo){
+		switch(playerNo){
+		case 1 : return (Domino[])player1.toArray(new Domino[player1.size()]);
+		
+		case 2 : return (Domino[])player2.toArray(new Domino[player2.size()]);
+		
+		case 3 : return (Domino[])player3.toArray(new Domino[player3.size()]);
+		
+		case 4 : return (Domino[])player4.toArray(new Domino[player4.size()]);
+		}
+		return null;
+
+	}
 	
+	/**
+	 * Returns the list of played domino tiles.
+	 * @return
+	 */
+	public ArrayList<Domino> getPlayedTiles(){
+		return this.played;
+	}
+	
+	/**
+	 * Returns the list of unplayed domino tiles.
+	 * @return
+	 */
+	public ArrayList<Domino> getUnplayedTiles(){
+		return this.unplayed;
+	}
+
+	/**
+	 * Removes the given tile from the payer's list.
+	 * @param player
+	 * @param tile
+	 */
+	public void remove(int player, Domino tile){
+		switch(player){
+		case 1: player1.remove(tile);
+		case 2: player2.remove(tile);
+		case 3: player3.remove(tile);
+		case 4: player4.remove(tile);
+		}
+	}
+	
+	/**
+	 * Returns the total weight of the specified collection 
+	 * of tiles.
+	 * @param tiles
+	 * @return
+	 */
+	public int handWeight(Domino[] tiles){
+		int count = 0 ;
+		for (Domino tile : tiles){
+			count += tile.getWeight();
+		}
+		return count;
+	}
+	
+	/**
+	 * Returns the total weight in the remaining tiles of the 
+	 * team denoted as Us : player 1 and 3.
+	 * @return
+	 */
+	public int teamUsWeight(){
+		return handWeight(getTiles(1))+handWeight(getTiles(3));
+	}
+	
+	/**
+	 * Returns the total weight in the remaining tiles of the 
+	 * team denoted as Them : player 2 and 4.
+	 * @return
+	 */
+	public int teamThemWeight(){
+		return handWeight(getTiles(2))+handWeight(getTiles(4));
+	}
+	
+	
+	/**
+	 * Returns the total board count. Used to determine when 
+	 * to force a lock.
+	 * @return
+	 */
+	public int getBoardCount(){
+		int count = 0;
+		for(Domino tile : played){
+			count+=tile.getWeight();
+		}
+		return count;
+	}
+	
+	/**
+	 * Returns the total count of tiles in all player hands.
+	 */
+	public int getUnplayedCount(){
+		int count = 0;
+		for(Domino tile : unplayed){
+			count+=tile.getWeight();
+		}
+		return count;
+	}
+
+	/** 
+	 * Deprecated Method - Returns player's hand.
+	 * @return
+	 */
+	@Deprecated
 	public Domino[] getPlayerTiles(){
-		return player1;
+		return (Domino[])player1.toArray(new Domino[player1.size()]);
 	}
+
 	
-	static private void print(){
-		System.out.println("Player 1: " +
-				player1[0].getHeadValue()+"-"+player1[0].getTailValue()+", "+
-				player1[1].getHeadValue()+"-"+player1[1].getTailValue()+", "+
-				player1[2].getHeadValue()+"-"+player1[2].getTailValue()+", "+
-				player1[3].getHeadValue()+"-"+player1[3].getTailValue()+", "+
-				player1[4].getHeadValue()+"-"+player1[4].getTailValue()+", "+
-				player1[5].getHeadValue()+"-"+player1[5].getTailValue()+", "+
-				player1[6].getHeadValue()+"-"+player1[6].getTailValue());
-		System.out.println("Player 2: " +
-				player2[0].getHeadValue()+"-"+player2[0].getTailValue()+", "+
-				player2[1].getHeadValue()+"-"+player2[1].getTailValue()+", "+
-				player2[2].getHeadValue()+"-"+player2[2].getTailValue()+", "+
-				player2[3].getHeadValue()+"-"+player2[3].getTailValue()+", "+
-				player2[4].getHeadValue()+"-"+player2[4].getTailValue()+", "+
-				player2[5].getHeadValue()+"-"+player2[5].getTailValue()+", "+
-				player2[6].getHeadValue()+"-"+player2[6].getTailValue());
-		System.out.println("Player 3: " +
-				player3[0].getHeadValue()+"-"+player3[0].getTailValue()+", "+
-				player3[1].getHeadValue()+"-"+player3[1].getTailValue()+", "+
-				player3[2].getHeadValue()+"-"+player3[2].getTailValue()+", "+
-				player3[3].getHeadValue()+"-"+player3[3].getTailValue()+", "+
-				player3[4].getHeadValue()+"-"+player3[4].getTailValue()+", "+
-				player3[5].getHeadValue()+"-"+player3[5].getTailValue()+", "+
-				player3[6].getHeadValue()+"-"+player3[6].getTailValue());
-		System.out.println("Player 4: " +
-				player4[0].getHeadValue()+"-"+player4[0].getTailValue()+", "+
-				player4[1].getHeadValue()+"-"+player4[1].getTailValue()+", "+
-				player4[2].getHeadValue()+"-"+player4[2].getTailValue()+", "+
-				player4[3].getHeadValue()+"-"+player4[3].getTailValue()+", "+
-				player4[4].getHeadValue()+"-"+player4[4].getTailValue()+", "+
-				player4[5].getHeadValue()+"-"+player4[5].getTailValue()+", "+
-				player4[6].getHeadValue()+"-"+player4[6].getTailValue());
-	}
-	
-	
-	
-	
-	
-//	public static void main(String[] args){
-//		new Tiles();
-//		print();
-//	}
+
+
 }
 
