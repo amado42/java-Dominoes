@@ -362,6 +362,13 @@ public class Logic {
 		return this.currentPlayer;
 	}
 	
+	/**
+	 * Returns the distribution of tiles.
+	 */
+	public Tiles getTiles(){
+		return this.dominoes;
+	}
+	
 	
 	
 	/**
@@ -410,6 +417,14 @@ public class Logic {
 		System.out.println("Player "+ currentPlayer + " won the game!\n" +
 						   "Player Team Score: "+ teamUsScore+"\n"+
 				           "Computer Team Score: "+teamThemScore+"\n");
+	}
+	
+	public void printMatchWonMessage(){
+		if (currentPlayer == 1 || currentPlayer == 3){
+			System.out.println("Team Us won "+teamUsScore+ " to "+ teamThemScore);
+		}
+		else
+			System.out.println("Team Them won "+ teamThemScore + " to "+teamUsScore);
 	}
 
 	public void printUnplayed() {

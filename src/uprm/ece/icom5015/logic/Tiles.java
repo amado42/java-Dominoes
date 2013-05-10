@@ -58,9 +58,16 @@ public class Tiles {
 	@SuppressWarnings("unchecked")
 	public void newHand(){
 		/* Bring all played tiles back to the unplayed list. */
-		while (!played.isEmpty()){
-			unplayed.add(played.remove(0));
+			/*while (!played.isEmpty()){
+				unplayed.add(played.remove(0));
+			}*/
+		played.clear(); unplayed.clear();
+		for(int i=0; i<=6; i++){
+			for (int j=i ; j<=6; j++){
+				unplayed.add(new Domino(i,j));
+			}
 		}
+		
 		/* All 28 tiles are unplayed and not distributed. Thus
 		 * the undrawn list should also represent the 28 tiles.
 		 */
